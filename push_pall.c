@@ -1,28 +1,35 @@
 #include "monty.h"
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 /**
- * push - adds node to stack
+ * push - pushes an element to the stack
  */
 void push(stack_t **stack, int n)
 {
-	stack_t *new = malloc(sizeof(stack_t));
+	stack_t *new_node, *temp;
 
-	if (!new)
+	new_node = malloc(sizeof(stack_t));
+	if (!new_node)
 	{
 		fprintf(stderr, "Error: malloc failed\n");
 		exit(EXIT_FAILURE);
 	}
 
-	new->n = n;
-	new->prev = NULL;
-	new->next = *stack;
+	new_node->n = n;
+	new_node->prev = NULL;
+	new_node->next = NULL;
 
-	if (*stack)
-		(*stack)->prev = new;
+	if (!*stack)
+	{
+		*stack = new_node;
+		return;
+	}
 
-	*stack = new;
+	temp = *stack;
+	new_node->next = temp;
+	temp->prev = new_node;
+	*stack = new_node;
 }
 
 /**
@@ -40,35 +47,6 @@ void pall(stack_t **stack)
 }
 
 /**
- * handle_push - validates and pushes integer
- */
-void handle_push(stack_t **stack, char *arg, unsigned int line_number)
-{
-	int i = 0, num;
-
-	if (!arg)
-	{
-		fprintf(stderr, "L%d: usage: push integer\n", line_number);
-		exit(EXIT_FAILURE);
-	}
-
-	if (arg[0] == '-' || arg[0] == '+')
-		i = 1;
-
-	for (; arg[i]; i++)
-	{
-		if (arg[i] < '0' || arg[i] > '9')
-		{
-			fprintf(stderr, "L%d: usage: push integer\n", line_number);
-			exit(EXIT_FAILURE);
-		}
-	}
-
-	num = atoi(arg);
-	push(stack, num);
-}
-
-/**
  * pop - removes top element
  */
 void pop(stack_t **stack, unsigned int line_number)
@@ -82,7 +60,7 @@ void pop(stack_t **stack, unsigned int line_number)
 	}
 
 	temp = *stack;
-	*stack = (*stack)->next;
+	*stack = temp->next;
 
 	if (*stack)
 		(*stack)->prev = NULL;
@@ -147,32 +125,51 @@ void add(stack_t **stack, unsigned int line_number)
 	first = *stack;
 	second = first->next;
 
-	second->n += first->n;
-
+	second->n = second->n + first->n;
 	*stack = second;
 	second->prev = NULL;
 
 	free(first);
 }
+
 /**
  * nop - does nothing
- * @stack: pointer to stack
- * @line_number: line number
  */
 void nop(stack_t **stack, unsigned int line_number)
 {
 	(void)stack;
 	(void)line_number;
 }
+
 /**
- * _div - divides second top by top element
- * @stack: pointer to stack
- * @line_number: line number
+ * sub - subtracts top from second top
+ */
+void sub(stack_t **stack, unsigned int line_number)
+{
+	stack_t *first, *second;
+
+	if (!stack || !*stack || !(*stack)->next)
+	{
+		fprintf(stderr, "L%d: can't sub, stack too short\n", line_number);
+		exit(EXIT_FAILURE);
+	}
+
+	first = *stack;
+	second = first->next;
+
+	second->n = second->n - first->n;
+
+	*stack = second;
+	second->prev = NULL;
+	free(first);
+}
+
+/**
+ * _div - divides second top by top
  */
 void _div(stack_t **stack, unsigned int line_number)
 {
-	stack_t *first;
-	stack_t *second;
+	stack_t *first, *second;
 
 	if (!stack || !*stack || !(*stack)->next)
 	{
@@ -181,7 +178,6 @@ void _div(stack_t **stack, unsigned int line_number)
 	}
 
 	first = *stack;
-
 	if (first->n == 0)
 	{
 		fprintf(stderr, "L%d: division by zero\n", line_number);
@@ -194,18 +190,15 @@ void _div(stack_t **stack, unsigned int line_number)
 
 	*stack = second;
 	second->prev = NULL;
-
 	free(first);
 }
+
 /**
- * mul - multiplies top two elements of stack
- * @stack: pointer to stack
- * @line_number: line number
+ * mul - multiplies top two elements
  */
 void mul(stack_t **stack, unsigned int line_number)
 {
-	stack_t *first;
-	stack_t *second;
+	stack_t *first, *second;
 
 	if (!stack || !*stack || !(*stack)->next)
 	{
@@ -220,13 +213,41 @@ void mul(stack_t **stack, unsigned int line_number)
 
 	*stack = second;
 	second->prev = NULL;
-
 	free(first);
 }
+
+/**
+ * mod - remainder second top / top
+ */
+void mod(stack_t **stack, unsigned int line_number)
+{
+	stack_t *first, *second;
+
+	if (!stack || !*stack || !(*stack)->next)
+	{
+		fprintf(stderr, "L%d: can't mod, stack too short\n", line_number);
+		exit(EXIT_FAILURE);
+	}
+
+	first = *stack;
+
+	if (first->n == 0)
+	{
+		fprintf(stderr, "L%d: division by zero\n", line_number);
+		exit(EXIT_FAILURE);
+	}
+
+	second = first->next;
+
+	second->n = second->n % first->n;
+
+	*stack = second;
+	second->prev = NULL;
+	free(first);
+}
+
 /**
  * pchar - prints char at top of stack
- * @stack: pointer to stack
- * @line_number: line number
  */
 void pchar(stack_t **stack, unsigned int line_number)
 {
@@ -236,7 +257,7 @@ void pchar(stack_t **stack, unsigned int line_number)
 		exit(EXIT_FAILURE);
 	}
 
-	if ((*stack)->n <= 0 || (*stack)->n >= 128)
+	if ((*stack)->n < 0 || (*stack)->n > 127)
 	{
 		fprintf(stderr, "L%d: can't pchar, value out of range\n", line_number);
 		exit(EXIT_FAILURE);
@@ -244,30 +265,21 @@ void pchar(stack_t **stack, unsigned int line_number)
 
 	printf("%c\n", (*stack)->n);
 }
-/**
- * sub - subtracts top element from second top element
- * @stack: pointer to stack
- * @line_number: line number
- */
-void sub(stack_t **stack, unsigned int line_number)
-{
-	stack_t *first;
-	stack_t *second;
+#include <string.h>
 
-	if (!stack || !*stack || !(*stack)->next)
+/**
+ * handle_push - handles push opcode
+ */
+void handle_push(stack_t **stack, char *arg, unsigned int line_number)
+{
+	int n;
+
+	if (!arg)
 	{
-		fprintf(stderr, "L%d: can't sub, stack too short\n",
-			line_number);
+		fprintf(stderr, "L%d: usage: push integer\n", line_number);
 		exit(EXIT_FAILURE);
 	}
 
-	first = *stack;
-	second = first->next;
-
-	second->n = second->n - first->n;
-
-	*stack = second;
-	second->prev = NULL;
-
-	free(first);
+	n = atoi(arg);
+	push(stack, n);
 }
