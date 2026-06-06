@@ -30,6 +30,7 @@ void swap(stack_t **stack, unsigned int line_number);
 void add(stack_t **stack, unsigned int line_number);
 void nop(stack_t **stack, unsigned int line_number);
 void _div(stack_t **stack, unsigned int line_number);
+void mul(stack_t **stack, unsigned int line_number);
 /* parser functions */
 void execute_line(char *line, stack_t **stack, unsigned int line_number);
 void handle_push(stack_t **stack, char *arg, unsigned int line_number);

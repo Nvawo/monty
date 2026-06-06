@@ -28,6 +28,8 @@ else if (strcmp(opcode, "nop") == 0)
 	nop(stack, line_number);
 else if (strcmp(opcode, "div") == 0)
 	_div(stack, line_number);
+else if (strcmp(opcode, "mul") == 0)
+	mul(stack, line_number);
  else
     {
         fprintf(stderr, "L%d: unknown instruction %s\n", line_number, opcode);
