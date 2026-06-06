@@ -29,6 +29,7 @@ int main(int argc, char **argv)
     }
 
     free(line);
-    fclose(file);
-    return 0;
+free_stack(stack);
+fclose(file);
+return (0);
 }

@@ -27,5 +27,5 @@ void pall(stack_t **stack);
 /* parser functions */
 void execute_line(char *line, stack_t **stack, unsigned int line_number);
 void handle_push(stack_t **stack, char *arg, unsigned int line_number);
-
+void free_stack(stack_t *stack);
 #endif

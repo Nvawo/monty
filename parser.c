@@ -10,15 +10,12 @@ void execute_line(char *line, stack_t **stack, unsigned int line_number)
     if (!opcode || opcode[0] == '#')
         return;
 
+    arg = strtok(NULL, " \t\n");
+
     if (strcmp(opcode, "push") == 0)
-    {
-        arg = strtok(NULL, " \t\n");
         handle_push(stack, arg, line_number);
-    }
     else if (strcmp(opcode, "pall") == 0)
-    {
         pall(stack);
-    }
     else
     {
         fprintf(stderr, "L%d: unknown instruction %s\n", line_number, opcode);
