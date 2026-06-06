@@ -32,3 +32,30 @@ void pall(stack_t **stack)
         temp = temp->next;
     }
 }
+void handle_push(stack_t **stack, char *arg, unsigned int line)
+{
+    int n;
+    int i = 0;
+
+    if (!arg)
+    {
+        fprintf(stderr, "L%d: usage: push integer\n", line);
+        exit(EXIT_FAILURE);
+    }
+
+    /* validate number */
+    if (arg[0] == '-' || arg[0] == '+')
+        i = 1;
+
+    for (; arg[i]; i++)
+    {
+        if (arg[i] < '0' || arg[i] > '9')
+        {
+            fprintf(stderr, "L%d: usage: push integer\n", line);
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    n = atoi(arg);
+    push(stack, n);
+}
