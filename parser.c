@@ -32,6 +32,8 @@ else if (strcmp(opcode, "mul") == 0)
 	mul(stack, line_number);
 else if (strcmp(opcode, "pchar") == 0)
 	pchar(stack, line_number);
+else if (strcmp(opcode, "sub") == 0)
+	sub(stack, line_number);
  else
     {
         fprintf(stderr, "L%d: unknown instruction %s\n", line_number, opcode);
