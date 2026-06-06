@@ -60,3 +60,18 @@ void handle_push(stack_t **stack, char *arg, unsigned int line)
     num = atoi(arg);
     push(stack, num);
 }
+/**
+ * pint - prints value at top of stack
+ * @stack: pointer to stack
+ * @line_number: line number (for error reporting)
+ */
+void pint(stack_t **stack, unsigned int line_number)
+{
+	if (!stack || !*stack)
+	{
+		fprintf(stderr, "L%d: can't pint, stack empty\n", line_number);
+		exit(EXIT_FAILURE);
+	}
+
+	printf("%d\n", (*stack)->n);
+}

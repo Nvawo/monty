@@ -23,7 +23,7 @@ typedef struct instruction_s
 /* core functions */
 void push(stack_t **stack, int n);
 void pall(stack_t **stack);
-
+void pint(stack_t **stack, unsigned int line_number);
 /* parser functions */
 void execute_line(char *line, stack_t **stack, unsigned int line_number);
 void handle_push(stack_t **stack, char *arg, unsigned int line_number);
