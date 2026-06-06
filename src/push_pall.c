@@ -1,6 +1,6 @@
 #include "monty.h"
 
-/* push node at top */
+/* push node */
 void push(stack_t **stack, int n)
 {
     stack_t *new_node = malloc(sizeof(stack_t));
@@ -32,10 +32,12 @@ void pall(stack_t **stack)
         temp = temp->next;
     }
 }
+
+/* push handler with validation */
 void handle_push(stack_t **stack, char *arg, unsigned int line)
 {
-    int n;
     int i = 0;
+    int num;
 
     if (!arg)
     {
@@ -43,7 +45,6 @@ void handle_push(stack_t **stack, char *arg, unsigned int line)
         exit(EXIT_FAILURE);
     }
 
-    /* validate number */
     if (arg[0] == '-' || arg[0] == '+')
         i = 1;
 
@@ -56,6 +57,6 @@ void handle_push(stack_t **stack, char *arg, unsigned int line)
         }
     }
 
-    n = atoi(arg);
-    push(stack, n);
+    num = atoi(arg);
+    push(stack, num);
 }

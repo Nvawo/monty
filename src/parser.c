@@ -1,8 +1,5 @@
 #include "monty.h"
 
-/**
- * execute_line - parses and executes one line
- */
 void execute_line(char *line, stack_t **stack, unsigned int line_number)
 {
     char *opcode;
@@ -11,7 +8,7 @@ void execute_line(char *line, stack_t **stack, unsigned int line_number)
     opcode = strtok(line, " \t\n");
 
     if (!opcode || opcode[0] == '#')
-        return; /* skip blank/comment lines */
+        return;
 
     if (strcmp(opcode, "push") == 0)
     {
