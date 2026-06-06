@@ -164,3 +164,36 @@ void nop(stack_t **stack, unsigned int line_number)
 	(void)stack;
 	(void)line_number;
 }
+/**
+ * _div - divides second top by top element
+ * @stack: pointer to stack
+ * @line_number: line number
+ */
+void _div(stack_t **stack, unsigned int line_number)
+{
+	stack_t *first;
+	stack_t *second;
+
+	if (!stack || !*stack || !(*stack)->next)
+	{
+		fprintf(stderr, "L%d: can't div, stack too short\n", line_number);
+		exit(EXIT_FAILURE);
+	}
+
+	first = *stack;
+
+	if (first->n == 0)
+	{
+		fprintf(stderr, "L%d: division by zero\n", line_number);
+		exit(EXIT_FAILURE);
+	}
+
+	second = first->next;
+
+	second->n = second->n / first->n;
+
+	*stack = second;
+	second->prev = NULL;
+
+	free(first);
+}
