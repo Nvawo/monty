@@ -1,69 +1,99 @@
 #include "monty.h"
 
-/* push node */
+/**
+ * push - adds node to stack
+ */
 void push(stack_t **stack, int n)
 {
-    stack_t *new_node = malloc(sizeof(stack_t));
+	stack_t *new = malloc(sizeof(stack_t));
 
-    if (!new_node)
-    {
-        fprintf(stderr, "Error: malloc failed\n");
-        exit(EXIT_FAILURE);
-    }
+	if (!new)
+	{
+		fprintf(stderr, "Error: malloc failed\n");
+		exit(EXIT_FAILURE);
+	}
 
-    new_node->n = n;
-    new_node->prev = NULL;
-    new_node->next = *stack;
+	new->n = n;
+	new->prev = NULL;
+	new->next = *stack;
 
-    if (*stack)
-        (*stack)->prev = new_node;
+	if (*stack)
+		(*stack)->prev = new;
 
-    *stack = new_node;
+	*stack = new;
 }
 
-/* print stack */
+/**
+ * pall - prints all stack values
+ */
 void pall(stack_t **stack)
 {
-    stack_t *temp = *stack;
+	stack_t *temp = *stack;
 
-    while (temp)
-    {
-        printf("%d\n", temp->n);
-        temp = temp->next;
-    }
+	while (temp)
+	{
+		printf("%d\n", temp->n);
+		temp = temp->next;
+	}
 }
 
-/* push handler with validation */
-void handle_push(stack_t **stack, char *arg, unsigned int line)
+/**
+ * handle_push - validates and pushes value
+ */
+void handle_push(stack_t **stack, char *arg, unsigned int line_number)
 {
-    int i = 0;
-    int num;
+	int i = 0;
+	int num;
 
-    if (!arg)
-    {
-        fprintf(stderr, "L%d: usage: push integer\n", line);
-        exit(EXIT_FAILURE);
-    }
+	if (!arg)
+	{
+		fprintf(stderr, "L%d: usage: push integer\n", line_number);
+		exit(EXIT_FAILURE);
+	}
 
-    if (arg[0] == '-' || arg[0] == '+')
-        i = 1;
+	if (arg[0] == '-' || arg[0] == '+')
+		i = 1;
 
-    for (; arg[i]; i++)
-    {
-        if (arg[i] < '0' || arg[i] > '9')
-        {
-            fprintf(stderr, "L%d: usage: push integer\n", line);
-            exit(EXIT_FAILURE);
-        }
-    }
+	for (; arg[i]; i++)
+	{
+		if (arg[i] < '0' || arg[i] > '9')
+		{
+			fprintf(stderr, "L%d: usage: push integer\n", line_number);
+			exit(EXIT_FAILURE);
+		}
+	}
 
-    num = atoi(arg);
-    push(stack, num);
+	num = atoi(arg);
+	push(stack, num);
 }
+
+/**
+ * pop - removes top element of stack
+ */
+void pop(stack_t **stack, unsigned int line_number)
+{
+	stack_t *temp;
+
+	if (!stack || !*stack)
+	{
+		fprintf(stderr, "L%d: can't pop an empty stack\n", line_number);
+		exit(EXIT_FAILURE);
+	}
+
+	temp = *stack;
+	*stack = (*stack)->next;
+
+	if (*stack)
+		(*stack)->prev = NULL;
+
+	free(temp);
+}
+#include "monty.h"
+
 /**
  * pint - prints value at top of stack
  * @stack: pointer to stack
- * @line_number: line number (for error reporting)
+ * @line_number: line number
  */
 void pint(stack_t **stack, unsigned int line_number)
 {
@@ -74,4 +104,30 @@ void pint(stack_t **stack, unsigned int line_number)
 	}
 
 	printf("%d\n", (*stack)->n);
+}
+/**
+ * add - adds top two elements of stack
+ * @stack: pointer to stack
+ * @line_number: line number
+ */
+void add(stack_t **stack, unsigned int line_number)
+{
+	stack_t *first;
+	stack_t *second;
+
+	if (!stack || !*stack || !(*stack)->next)
+	{
+		fprintf(stderr, "L%d: can't add, stack too short\n", line_number);
+		exit(EXIT_FAILURE);
+	}
+
+	first = *stack;
+	second = first->next;
+
+	second->n = second->n + first->n;
+
+	*stack = second;
+	second->prev = NULL;
+
+	free(first);
 }

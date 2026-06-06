@@ -20,6 +20,8 @@ else if (strcmp(opcode, "pint") == 0)
 	pint(stack, line_number);
 else if (strcmp(opcode, "pop") == 0)
 	pop(stack, line_number);
+else if (strcmp(opcode, "add") == 0)
+	add(stack, line_number);
     else
     {
         fprintf(stderr, "L%d: unknown instruction %s\n", line_number, opcode);
