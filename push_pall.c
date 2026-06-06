@@ -1,4 +1,6 @@
 #include "monty.h"
+#include <stdlib.h>
+#include <stdio.h>
 
 /**
  * push - adds node to stack
@@ -38,12 +40,11 @@ void pall(stack_t **stack)
 }
 
 /**
- * handle_push - validates and pushes value
+ * handle_push - validates and pushes integer
  */
 void handle_push(stack_t **stack, char *arg, unsigned int line_number)
 {
-	int i = 0;
-	int num;
+	int i = 0, num;
 
 	if (!arg)
 	{
@@ -68,7 +69,7 @@ void handle_push(stack_t **stack, char *arg, unsigned int line_number)
 }
 
 /**
- * pop - removes top element of stack
+ * pop - removes top element
  */
 void pop(stack_t **stack, unsigned int line_number)
 {
@@ -88,12 +89,9 @@ void pop(stack_t **stack, unsigned int line_number)
 
 	free(temp);
 }
-#include "monty.h"
 
 /**
- * pint - prints value at top of stack
- * @stack: pointer to stack
- * @line_number: line number
+ * pint - prints top element
  */
 void pint(stack_t **stack, unsigned int line_number)
 {
@@ -105,41 +103,13 @@ void pint(stack_t **stack, unsigned int line_number)
 
 	printf("%d\n", (*stack)->n);
 }
+
 /**
- * add - adds top two elements of stack
- * @stack: pointer to stack
- * @line_number: line number
- */
-void add(stack_t **stack, unsigned int line_number)
-{
-	stack_t *first;
-	stack_t *second;
-
-	if (!stack || !*stack || !(*stack)->next)
-	{
-		fprintf(stderr, "L%d: can't add, stack too short\n", line_number);
-		exit(EXIT_FAILURE);
-	}
-
-	first = *stack;
-	second = first->next;
-
-	second->n = second->n + first->n;
-
-	*stack = second;
-	second->prev = NULL;
-
-	free(first);
-}
-/**
- * swap - swaps top two elements of stack
- * @stack: pointer to stack
- * @line_number: line number
+ * swap - swaps top two elements
  */
 void swap(stack_t **stack, unsigned int line_number)
 {
-	stack_t *first;
-	stack_t *second;
+	stack_t *first, *second;
 
 	if (!stack || !*stack || !(*stack)->next)
 	{
@@ -159,4 +129,28 @@ void swap(stack_t **stack, unsigned int line_number)
 	first->prev = second;
 
 	*stack = second;
+}
+
+/**
+ * add - adds top two elements
+ */
+void add(stack_t **stack, unsigned int line_number)
+{
+	stack_t *first, *second;
+
+	if (!stack || !*stack || !(*stack)->next)
+	{
+		fprintf(stderr, "L%d: can't add, stack too short\n", line_number);
+		exit(EXIT_FAILURE);
+	}
+
+	first = *stack;
+	second = first->next;
+
+	second->n += first->n;
+
+	*stack = second;
+	second->prev = NULL;
+
+	free(first);
 }
