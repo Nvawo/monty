@@ -40,6 +40,8 @@ void execute_line(char *line, stack_t **stack, unsigned int line_number)
         pstr(stack);
     else if (strcmp(opcode, "rotl") == 0)
         rotl(stack);
+else if (strcmp(opcode, "rotr") == 0)
+    rotr(stack);
     else
     {
         fprintf(stderr, "L%u: unknown instruction %s\n",
