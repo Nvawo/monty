@@ -1,18 +1,20 @@
-# Brainfuck script to multiply two single-digit numbers (< 10)
+# Move the starting point right to create a safety buffer zone
+>>
 
-,------------------------------------------------  Read first digit into Cell 0 and subtract 48
->,------------------------------------------------ Read second digit into Cell 1 and subtract 48
-<                                                  Move back to Cell 0 (our main loop counter)
+# Layout now:
+# Cell 0: Empty | Cell 1: Empty | Cell 2: Num1 | Cell 3: Num2 | Cell 4: Result | Cell 5: Temp
 
-[                                                  While Cell 0 != 0
-    >                                              Move to Cell 1
-    [>+>+<<-]                                      Move Cell 1 to Cell 2 and Cell 3 (Ends on Cell 1)
-    
-    >>                                             Move from Cell 1 to Cell 3
-    [<<+>>-]                                       Restore Cell 1 from Cell 3 (Ends on Cell 3)
-    
-    <<< -                                          Move from Cell 3 back to Cell 0, and decrement counter
+,------------------------------------------------  Read first digit into Cell 2
+>,------------------------------------------------ Read second digit into Cell 3
+<                                                  Return to Cell 2 (Loop Counter)
+
+[                                                  While Cell 2 != 0
+    >                                              Move to Cell 3
+    [>+>+<<-]                                      Move Cell 3 to Cell 4 and Cell 5 (Ends on Cell 3)
+    >>                                             Move to Cell 5
+    [<<+>>-]                                       Restore Cell 3 from Cell 5 (Ends on Cell 5)
+    <<< -                                          Move back to Cell 2 and decrement
 ]
 
->>++++++++++++++++++++++++++++++++++++++++++++++++ Move to Cell 2 and add 48 to convert back to ASCII
+>>++++++++++++++++++++++++++++++++++++++++++++++++ Move to Cell 4, add 48 for ASCII
 .                                                  Print the result
